@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% load ratings %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+    <!--====Home Search Section
+    ====================================-->
+    <div id="home-search-section" class="home-search-section-area bg-image home-header-one" style="background-image: url({% static 'images/welcome-bg3.jpg' %});">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="welcome-text text-center tb">
+                        <div class="tb-cell">
+                            <h1> Org Sport</h1>
+                            <p>спорт и досуг рядом</p>
+                            <form class="product-search-form" action="{% url 'browse_courses' %}" method="get">
+                                <div class="form-group">
+                                    <input class="form-controllar" name="search" placeholder="поиск ..." type="text" required>
+                                    <button class="btn btn-default btn-primary" type="submit">поиск</button>
+                                </div>
+                            </form><!--/.product-search-form-->
+                        </div><!--/.tb-cell-->
+                    </div><!--/.welcome-text-->
+                </div><!--/.col-lg-12-->
+            </div><!--/.row-->
+        </div><!--/.container-->
+    </div><!--/#home-search-section-->
+
+    <!--====Services Section
+    ====================================-->
+    <section id="services-section" class="services-section-area s-pd1">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col-lg-8">
+                    <div class="section-heading-area text-center">
+                        <h2 class="section-heading text-capitalize"> Org Sport</h2>
+                        <p> Org Sport - это электронный сервис организации, планирования и анализа спортивных мероприятий</p>
+                    </div><!--/.section-heading-area-->
+                </div><!--/.col-lg-8-->
+            </div><!--/.row-->
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="single-service text-center">
+                        <div class="icon">
+                            <img src="{% static 'images/icon/s-icon4.png' %}" alt="icon">
+                        </div>
+                        <h3>Планирование спортивных мероприятий</h3>
+                        <p>Платформа организации и планирования спортивных мероприятий в субъектах Российской Федерации </p>
+                    </div><!--/.single-service-->
+                </div><!--/.col-lg-4-->
+                <div class="col-lg-4 col-md-4">
+                    <div class="single-service text-center">
+                        <div class="icon">
+                            <img src="{% static 'images/icon/s-icon2.png' %}" alt="icon">
+                        </div><!--/.row-->
+                        <h3>Интерактивность планирования любительского и профессионального спорта</h3>
+                        <p>Площадка подбора секций и спортивных мероприятий по направлениям и рейтингу </p>
+                    </div><!--/.single-service-->
+                </div><!--/.col-lg-4-->
+                <div class="col-lg-4 col-md-4">
+                    <div class="single-service text-center">
+                        <div class="icon">
+                            <img src="{% static 'images/icon/s-icon3.png' %}" alt="icon">
+                        </div><!--/.row-->
+                        <h3>Межцентровой доступ к секциям и мероприятиям</h3>
+                        <p>Централизованный сервис планирования, контроля и спортивной организации в городе и регионе</p>
+                    </div><!--/.single-service-->
+                </div><!--/.col-lg-4-->
+            </div><!--/.row-->
+        </div><!--/.container-->
+    </section><!--/#services-section-->
+
+    <!--====Courses Section
+    ====================================-->
+    <section id="courses-section" class="popular-courses-area bg-gray s-pd2">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col-lg-8">
+                    <div class="section-heading-area text-center">
+                        <h2>Cпортивные мероприятия</h2>
+                    </div><!--/.section-heading-area-->
+                </div><!--/.col-lg-8-->
+            </div><!--/.row-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="list-unstyled popular-filter-nav text-center">
+                        <li><a class="filter" href="#" data-filter="*">Все</a></li>
+                        {% for subject in subjects %}
+                            <li><a class="filter" href="#" data-filter=".{{ subject.name }}">{{ subject.name }}</a></li>
+                        {% endfor %}
+                    </ul><!--/.popular-filter-nav-->
+                </div><!--/.col-lg-12-->
+            </div><!--/.row-->
+            <div class="row courses-item-content">
+                {% for course in popular_courses %}
+                    <div class="col-lg-4 col-sm-6 {{ course.subject.name }}">
+                        <!--Single Course Item Start-->
+                        <div class="single-course-item border-radius">
+                            <div class="course-thumb-area">
+                                <div style="width: 350px; height: 200px; overflow: hidden">
+                                    <img class="img-fluid" src="{{ course.image.url }}" alt="img">
+                                </div>
+                            </div><!--/.course-thumb-area-->
+                            <div class="course-content">
+                                <h2><a href="{% url 'course_details' course.object_id %}">{{ course.title }}</a></h2>
+                                {{ course.subject.get_html_badge }}
+                                ({{ course.code }})
+                                <p style="white-space: nowrap; width: 310px; overflow: hidden; text-overflow: ellipsis">{{ course.description }}</p>
+
+                                <div class="course-reviews">
+                                    {% if user.is_student %}
+                                        {% ratings course %}
+                                    {% else %}
+                                        <div class="star-ratings-css" style="float:left">
+                                            <div class="star-ratings-css-top" style="width: {{ course.average|get_star_percentage|floatformat:"-2" }}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                            </div>
+                                            <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                            <b>{{ course.average|floatformat:"-2" }}</b>/5
+                                            ({{ course.count }}
+                                            {% if course.count == 1 %}
+                                                оценка)
+                                            {% else %}
+                                                оценок)
+                                            {% endif %}
+
+                                    {% endif %}
+                                </div><!--/.course-reviews-->
+                                <hr>
+                                <div class="trainer-profile clearfix">
+                                    {% thumbnail course.owner.teacher.image "100x100" crop="center" as im %}
+                                        <img class="rounded-circle" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="course-owner">
+                                    {% endthumbnail %}
+                                    <div class="trainer-info">
+                                        <h3>{{ course.owner.first_name }} {{ course.owner.last_name }}</h3>
+                                        <p>{{ course.created_at|date:"d F Y" }}</p>
+                                    </div>
+                                </div><!--/.trainer-profile-->
+                            </div><!--/.course-content-->
+                        </div><!--/.single-course-item-end-->
+                    </div><!--/.col-lg-4-->
+                {% endfor %}
+            </div><!--/.row-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="group-btn text-center">
+                        <a href="{% url 'browse_courses' %}" class="btn btn-default">Хочу больше</a>
+                    </div><!--/.form-group-btn-->
+                </div><!--/.col-lg-12-->
+            </div><!--/.row-->
+        </div><!--/.container-->
+    </section><!--/#courses-section-->
+{% endblock %}
+
+{% block join_us %}
+    <div class="footer-top-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <h2> Org Sport</h2>
+                    </div><!--/.col-lg-9-->
+                    <div class="col-lg-3 text-right">
+                        <a href="{% url 'register' %}" class="btn btn-default">начать</a>
+                    </div><!--/.col-lg-3-->
+                </div><!--/.row-->
+            </div><!--/.container-->
+        </div><!--/.footer-top-area-->
+{% endblock %}

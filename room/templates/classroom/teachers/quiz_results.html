@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags humanize %}
+{% load thumbnail %}
+{% block content %}
+    <section id="courses-section" class="popular-courses-area bg-white s-pd2">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'teachers:quiz_list' %}">Опросы</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'teachers:quiz_edit' quiz.course.pk quiz.pk %}">{{ quiz.title }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Результаты</li>
+                </ol>
+            </nav>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                        <p{% if forloop.last %} class="mb-0"{% endif %}>{{ message }}</p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="row justify-content-md-center">
+                <div class="col-lg-8">
+                    <div class="section-heading-area text-center">
+                        <h2 class="section-heading text-capitalize">Результаты апроса</h2>
+                    </div><!--/.section-heading-area-->
+                </div><!--/.col-lg-8-->
+            </div><!--/.row-->
+
+            <div class="card">
+                <div class="card-header">
+                    <strong>Опросы</strong>
+                    <span class="badge badge-pill badge-primary float-right" style="background-color: #5DA2D5">Оценка секции/кружка: {{ quiz_score.average_score|default_if_none:0.0 }}</span>
+                </div>
+                <table class="table mb-0">
+                    {% if taken_quizzes %}
+                        <thead>
+                        <tr>
+                            <th>Участник</th>
+                            <th>Дата</th>
+                            <th>Оценка</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for taken_quiz in taken_quizzes %}
+                            <tr>
+                                <td>
+                                    {% thumbnail taken_quiz.student.image "40x40" crop="center" as im %}
+                                        <a href="{% url 'teachers:quiz_result_detail' taken_quiz.quiz.pk taken_quiz.student.pk taken_quiz.pk %}">
+                                            <img class="rounded-circle" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="course-owner">&nbsp;&nbsp;{{ taken_quiz.student.user.username }}
+                                        </a>
+                                    {% endthumbnail %}
+                                </td>
+                                <td>{{ taken_quiz.date|naturaltime }}</td>
+                                <td><b>{{ taken_quiz.score|floatformat:'-2' }}</b>/100</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    {% else %}
+                        <div class="list-group-item text-center">
+                            <p class="text-muted font-italic mb-0">Нет обучающихся, прошедших тестирование.</p>
+                        </div>
+                    {% endif %}
+                </table>
+                <div class="card-footer text-muted">
+                   Всего оценок: <strong>{{ total_taken_quizzes }}</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% autoescape off %}
+Добрый день {{ user.username }},
+Пожалуйста, нажмите на ссылку, чтобы подтвердить регистрацию,
+{{ domain }}{% url 'activate_student' uid token %}
+{% endautoescape %}

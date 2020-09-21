@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <!--=======Page Heading
+    ===============================================-->
+    <section class="page-heading-section before-bg bg-image" style="background-image: url({% static 'images/header/p-header2.jpg' %});">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="page-heading">
+                        <h2 class="page-name text-capitalize">Вход</h2>
+                    </div><!--/.page-heading-->
+                </div><!--/.col-md-12-->
+            </div><!--/.row-->
+        </div><!--/.container-->
+    </section><!--/.page-heading-area-->
+
+    <div class="login-page page-wrapper s-pd100" style="background-image:url({% static 'images/login.png' %}) ;background-repeat: no-repeat; background-attachment: fixed;
+            background-position: center;background-size:cover; ">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-6 col-sm-8">
+                    <div class="login-form-area">
+                        <form method="post" novalidate>
+                            <h2>Вход</h2>
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ next }}">
+                            {{ form|crispy }}
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="submit">Вход</button>
+                                <small class="text-muted ml-2">
+                                    <a class="login-form-forgot-password" href="{% url 'password_reset' %}">Забыли пароль?</a>
+                                </small>
+                                <div class="login-form-register-now">
+                                    <p>Впервые? <a href="{% url 'register' %}">Регистрация</a></p>
+                                </div>
+                            </div>
+                        </form>
+                    </div><!--/.login-form-area-->
+                </div><!--/.col-lg-4-->
+            </div><!--/.row-->
+        </div><!--/.container-->
+    </div><!--/.login-page-->
+{% endblock %}
