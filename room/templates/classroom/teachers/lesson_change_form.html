@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="login-page page-wrapper s-pd100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-12 col-md-6 col-sm-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'teachers:lesson_list' %}">Мои мероприятия</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Отредактировать мероприятие</li>
+                        </ol>
+                    </nav><br>
+                    <div class="login-form-area">
+                        <h2 class="mb-3">Редактировать мероприятие</h2>
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            {{ form.media }}
+                            {{ form|crispy }}
+                            {# The course field will be ignored in the backend since it is not included in LessonEditForm class #}
+                            <label for="course" class="col-form-label  requiredField">
+                                Курс<span class="asteriskField">*</span>
+                            </label>
+                            <input type="text" class="textinput textInput form-control" value="{{ course.title }}" id="course" disabled>
+                            <br>
+                            <button type="submit" class="btn btn-success">Сохранить изменения</button>
+                            <a href="javascript:history.back();" class="btn btn-outline-secondary" role="button">Отменить</a>
+                            <a href="#" class="btn btn-danger float-right delete">Удалить</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(".delete").click(function () {
+            swal({
+                title: "Удалить мероприятие?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    window.location = "{% url 'teachers:lesson_delete' course.pk lesson.pk %}";
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="login-page page-wrapper s-pd100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-6 col-sm-8">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                                <p{% if forloop.last %} class="mb-0"{% endif %}>{{ message }}</p>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="login-form-area">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'teachers:quiz_list' %}">Мои опросы</a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'teachers:quiz_edit' quiz.course.pk quiz.pk %}">{{ quiz.title }}</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Добавить новый опрос</li>
+                            </ol>
+                        </nav><br>
+                        <h2 class="mb-3">Добавить новый вопрос</h2>
+                        <p class="lead">Добавьте первый вопрос.</p>
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-success">Сохранить</button>
+                            <a href="{% url 'teachers:quiz_edit' quiz.course.pk quiz.pk %}" class="btn btn-outline-secondary" role="button">Отмена</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
